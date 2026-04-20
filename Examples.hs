@@ -1,32 +1,28 @@
 module Examples where
 
--- CFG
 import Syntax
 
-
--- ============================================================
--- EXAMPLE PROGRAMS
--- ============================================================
+--example programs
 
 -- Program 1: C Major Scale
 -- Ascending C major scale, 2 beats per note, 4/4 time, play once.
 -- Covers the full beginner one-octave range from C4 to C5.
 --
--- Concrete syntax:
---   lesson CMajorScale
---   beats 4
---   speed 90
---   times 1
---   play C4 2
---   play D4 2 finger 13
---   play E4 2 finger 12
---   play F4 2 finger 1
---   measure
---   play G4 2
---   play A4 2 finger 12
---   play B4 2 finger 2
---   play C5 2
---   measure
+-- Expected show output:
+--   Lesson CMajorScale
+--  1: Set beats per measure to 4
+--  2: Set tempo to 90 bpm
+--  3: Repeat the lesson 1 times
+--  4: Play C4 for 2 beats open
+--  5: Play D4 for 2 beats with fingering 13
+--  6: Play E4 for 2 beats with fingering 12
+--  7: Play F4 for 2 beats with fingering 1
+--  8: Barline
+--  9: Play G4 for 2 beats open
+-- 10: Play A4 for 2 beats with fingering 12
+-- 11: Play B4 for 2 beats with fingering 2
+-- 12: Play C5 for 2 beats open
+-- 13: Barline
 cMajorScale :: Prog
 cMajorScale = Prog "CMajorScale"
   [ Beats 4
@@ -49,24 +45,24 @@ cMajorScale = Prog "CMajorScale"
 -- Focus is entirely on counting varied beat lengths and silences.
 -- Play through twice.
 --
--- Concrete syntax:
---   lesson CountingFun
---   beats 4
---   speed 70
---   times 2
---   play C4 1
---   play E4 1 finger 12
---   play G4 2
---   measure
---   play C4 4
---   measure
---   silence 2
---   play G4 1
---   play C5 1
---   measure
---   play C4 2
---   silence 2
---   measure
+-- Expected show output:
+--   Lesson CountingFun
+--  1: Set beats per measure to 4
+--  2: Set tempo to 70 bpm
+--  3: Repeat the lesson 2 times
+--  4: Play C4 for 1 beats open
+--  5: Play E4 for 1 beats with fingering 12
+--  6: Play G4 for 2 beats open
+--  7: Barline
+--  8: Play C4 for 4 beats open
+--  9: Barline
+-- 10: Rest for 2 beats
+-- 11: Play G4 for 1 beats open
+-- 12: Play C5 for 1 beats open
+-- 13: Barline
+-- 14: Play C4 for 2 beats open
+-- 15: Rest for 2 beats
+-- 16: Barline
 countingFun :: Prog
 countingFun = Prog "CountingFun"
   [ Beats 4
@@ -91,26 +87,26 @@ countingFun = Prog "CountingFun"
 -- Targets the two hardest fingering combos: 13 (D4) and 12 (E4, A4).
 -- Fast alternating pattern to build muscle memory. Play through 4 times.
 --
--- Concrete syntax:
---   lesson ValveDrill
---   beats 4
---   speed 110
---   times 4
---   play D4 1 finger 13
---   play E4 1 finger 12
---   play D4 1 finger 13
---   play E4 1 finger 12
---   measure
---   play A4 1 finger 12
---   play E4 1 finger 12
---   play A4 1 finger 12
---   play E4 1 finger 12
---   measure
---   play D4 1 finger 13
---   play A4 1 finger 12
---   play D4 1 finger 13
---   play A4 1 finger 12
---   measure
+-- Expected show output:
+--   Lesson ValveDrill
+--  1: Set beats per measure to 4
+--  2: Set tempo to 110 bpm
+--  3: Repeat the lesson 4 times
+--  4: Play D4 for 1 beats with fingering 13
+--  5: Play E4 for 1 beats with fingering 12
+--  6: Play D4 for 1 beats with fingering 13
+--  7: Play E4 for 1 beats with fingering 12
+--  8: Barline
+--  9: Play A4 for 1 beats with fingering 12
+-- 10: Play E4 for 1 beats with fingering 12
+-- 11: Play A4 for 1 beats with fingering 12
+-- 12: Play E4 for 1 beats with fingering 12
+-- 13: Barline
+-- 14: Play D4 for 1 beats with fingering 13
+-- 15: Play A4 for 1 beats with fingering 12
+-- 16: Play D4 for 1 beats with fingering 13
+-- 17: Play A4 for 1 beats with fingering 12
+-- 18: Barline
 valveDrill :: Prog
 valveDrill = Prog "ValveDrill"
   [ Beats 4
