@@ -131,47 +131,15 @@ valveDrill = Song "ValveDrill"
   , Measure
   ]
 
-p1 = [Define "CMajorScale" cMajorScale,
-      Define "CountingFun" countingFun,
-      Define "ValveDrill" valveDrill,
-      Display "CMajorScale", -- in C++
-      Display "CountingFun",
-      Display "ValveDrill",
-      Replace "CMajorScale" 4 (Beats 3),
-      Display "CMajorScale"]
-
-{- scratch notes from class discussion -- not code
-
-      Show instances for statements 
-      print programs functions get from class-code
-
-      evaluator  go through every simple whenevr define go to env and define, replace, display -- thats what a behavior becomes when it affects the values. my value is a song. values in C++ are arays 
-
-      define main function
-
-      what part was the part you were talking about when you said
-       "the part where we have to go through the env and find the song 
-      and then replace it with the new song and then display it"
-      {-|
-      Module      : Examples
-      Description : This module contains the implementation of the behavior of various statements.
-              Specifically, it handles the logic for processing statements such as 'define'.
-              For example, when encountering a 'define' statement, the corresponding song
-              is added to the environment. This ensures that the environment is updated
-              appropriately based on the statements provided in the input.
-      -}
-      -- that is the part where we have to implement the behavior of the statements. so for example, when we have a define statement, we have to add that song to our environment.
-      
-when we have a display statement, we have to look up that song in our environment and print it out. when we have a replace statement, we have to look up that song in our environment, modify it according to the measure and the new statement, and then update our environment with the modified song.
-
-And when she was talking about the show instances for statements, that is the part where we have to implement how to convert our abstract syntax into a string representation that can be printed out. So for example, when we have a Play statement, we have to convert that into a string that says "Play [note] for [duration] beats with fingering [fingering]" or something like that. And when we have a Beats statement, we have to convert that into a string that says "Set beats per measure to [number]". And so on for each type of statement.
-
-What about the part where we have to implement the main function? That is the part where we have to put everything together. We have to define our environment, we have to define our programs, and then we have to execute our programs in order. So for example, we might start with an empty environment, then we execute the first program which defines the CMajorScale song, so we add that to our environment. Then we execute the second program which defines the CountingFun song, so we add that to our environment. Then we execute the third program which defines the ValveDrill song, so we add that to our environment. Then we execute the display statements which look up those songs in our environment and print them out. Then we execute the replace statement which modifies the CMajorScale song in our environment, and then we display it again to see the changes.
-
-so is that what changes my value? yes, the value of your environment changes as you execute each statement. The environment is essentially a mapping from song names to song definitions, and as you execute define statements, you add new songs to the environment. As you execute replace statements, you modify existing songs in the environment. And as you execute display statements, you look up songs in the environment and print them out. So the environment is the central data structure that holds all of your songs and their definitions, and it gets updated as you execute your programs.´
-
-and so the main function is where you would put all of this together. You would define your initial environment, you would define your programs, and then you would execute your programs in order, updating the environment as you go along. And at the end, you would have a final environment that contains all of your songs and their definitions, and you would have printed out the results of your display statements along the way.
-
-and so my programs are made with my language? Yes, your programs are written in the language that you have defined with your abstract syntax. So for example, the cMajorScale program is a Song that is defined using the Song constructor and the list of Measure statements. The countingFun program is also a Song that is defined using the Song constructor and a list of Measure statements. And the valveDrill program is also a Song that is defined using the Song constructor and a list of Measure statements. So all of these programs are written in the language that you have defined with your abstract syntax, and they can be executed by your evaluator to produce the desired output.
-
--}
+-- Program 4: full pipeline (defines all three lessons, displays each,
+-- replaces the time signature of CMajorScale, then displays it again).
+p1 :: Program
+p1 = [ Define  "CMajorScale" cMajorScale
+     , Define  "CountingFun" countingFun
+     , Define  "ValveDrill"  valveDrill
+     , Display "CMajorScale"
+     , Display "CountingFun"
+     , Display "ValveDrill"
+     , Replace "CMajorScale" 4 (Beats 3)
+     , Display "CMajorScale"
+     ]
