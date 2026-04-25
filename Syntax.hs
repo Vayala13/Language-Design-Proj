@@ -1,38 +1,23 @@
 module Syntax where
---context free grammer trumpet practice
+import Data.List (intercalate)
+--context free grammar
+-- trumpet practice
     {-
-    <Program> -> lesson <name> <stmts>
-    <stmts> -> [<stmt>]
-    <stmt> -> beats <int>
-            | speed <int>
-            | times <int>
-            | play <note> <int>
-            | play <note> <int> finger <fingering>
-            | silence <int>
-            | measure
+    <program>  -> <stmts>
+    <stmts>    -> <stmt><stmts> | epsilon
+    <stmt>     -> define <name> <song>
+                | display <name>
+                | replace <name> <int> <measure>
 
-    -- Notes in scientific pitch notation (C4 is middle C):
-    <note> -> C4 | D4 | E4 | F4 | G4 | A4 | Bb4 | B4
-            | C5 | D5 | E5 | F5 | G5
-
-    -- Valves pressed down (no clause = open hand):
-    --   open  ->  C4, G4, C5, G5
-    --   1     ->  F4, Bb4, F5
-    --   2     ->  B4
-    --   12    ->  E4, A4, E5
-    --   13    ->  D4, D5
-    <fingering> -> 1 | module Syntax where
---context free grammer trumpet practice
-    {-
-    <Program> -> lesson <name> <stmts>
-    <stmts> -> [<stmt>]
-    <stmt> -> beats <int>
-            | speed <int>
-            | times <int>
-            | play <note> <int>
-            | play <note> <int> finger <fingering>
-            | silence <int>
-            | measure
+    <song>     -> lesson <name> <measures>
+    <measures> -> <measure><measures> | epsilon
+    <measure>  -> beats <int>
+                | speed <int>
+                | times <int>
+                | play <note> <int>
+                | play <note> <int> finger <fingering>
+                | silence <int>
+                | measure
 
     -- Notes in scientific pitch notation (C4 is middle C):
     <note> -> C4 | D4 | E4 | F4 | G4 | A4 | Bb4 | B4
@@ -49,97 +34,66 @@ module Syntax where
     <name> -> String
     <int>  -> Int
 
-    <env> -> [(<name>, <Prog>)]
--}
+    -- environment
+    <env> -> [(<name>, <song>)]
+    -}
 
---abstract syntax
-type Name = String -- type synonyms
-type Note = String
-type Fingering = String
-
-data Prog = Prog Name [Stmt] -- ADT
-  deriving (Eq)
-
-data Stmt = Beats Int
-          | Speed Int
-          | Times Int
-          | Play Note Int (Maybe Fingering)
-          | Silence Int
-          | Measure
-          deriving (Eq)
-
-type Env = [(Name, Prog)]
-
---instance
-
-instance Show Prog where
-  show (Prog name stmts) = " Lesson " ++ name ++ "\n" ++ showStmts stmts
-
-showStmts :: [Stmt] -> String
-showStmts ss = showIterator 1 ss
-
-showIterator :: Int -> [Stmt] -> String
-showIterator _ [] = ""
-showIterator n [s] = show n ++ ": " ++ show s
-showIterator n (s:ss) = show n ++ ": " ++ show s ++ "\n" ++ showIterator (n+1) ss
-
-instance Show Stmt where
-  show (Beats n) = "Set beats per measure to " ++ show n
-  show (Speed n) = "Set tempo to " ++ show n ++ " bpm"
-  show (Times n) = "Repeat the lesson " ++ show n ++ " times"
-  show (Play note dur Nothing) = "Play " ++ note ++ " for " ++ show dur ++ " beats open"
-  show (Play note dur (Just f)) = "Play " ++ note ++ " for " ++ show dur ++ " beats with fingering " ++ f
-  show (Silence n) = "Rest for " ++ show n ++ " beats"
-  show Measure = "Barline"
-2 | 12 | 13
-
-    <name> -> String
-    <int>  -> Int
-
-    <env> -> [(<name>, <Prog>)]
--}
-
---abstract syntax
+-- abstract syntax
+-- Define :: Name -> Song -> Stmt
 type Program = [Stmt]
+
+printProgram :: Program -> String
+printProgram [] = ""
+printProgram (s : ss) = show s ++ printProgram ss
+
 data Stmt = Define Name Song
           | Display Name
           | Replace Name Int Measure
+    -- deriving Show
 
-type Name = String -- type synonyms
-type Note = String
+type Name      = String
+type Note      = String
 type Fingering = String
 
-data Song = Song Name [Measure] -- ADT
-  deriving (Eq)
+instance Show Stmt where
+    show (Define name song)   = "define " ++ name ++ " as\n" ++ show song
+    show (Display name)       = "display " ++ name ++ "\n"
+    show (Replace name n msr) = "replace " ++ name ++ " " ++ show n ++ " with " ++ show msr ++ "\n"
 
+-- Song :: Name -> [Measure] -> Song
+data Song = Song Name [Measure]
+    deriving Eq
+    -- deriving Show
+
+instance Show Song where
+    show (Song name msrs) = "lesson " ++ name ++ "\n" ++ printMeasures msrs
+
+printMeasures :: [Measure] -> String
+printMeasures [] = ""
+printMeasures (m : ms) = "\t" ++ show m ++ "\n" ++ printMeasures ms
+
+-- Beats :: Int -> Measure
 data Measure = Beats Int
-          | Speed Int
-          | Times Int
-          | Play Note Int (Maybe Fingering)
-          | Silence Int
-          | Measure
-          deriving (Eq)
+             | Speed Int
+             | Times Int
+             | Play Note Int (Maybe Fingering)
+             | Silence Int
+             | Measure
+             deriving Eq
+    -- deriving Show
+
+instance Show Measure where
+    show (Beats n)                = "beats " ++ show n
+    show (Speed n)                = "speed " ++ show n
+    show (Times n)                = "times " ++ show n
+    show (Play note dur Nothing)  = "play " ++ note ++ " " ++ show dur
+    show (Play note dur (Just f)) = "play " ++ note ++ " " ++ show dur ++ " finger " ++ f
+    show (Silence n)              = "silence " ++ show n
+    show Measure                  = "measure"
 
 type Env = [(Name, Song)]
 
---instance
-
-instance Show Song where
-  show (Song name msrs) = " Lesson " ++ name ++ "\n" ++ showMeasures msrs
-
-showMeasures :: [Measure] -> String
-showMeasures ss = showIterator 1 ss
-
-showIterator :: Int -> [Measure] -> String
-showIterator _ [] = ""
-showIterator n [s] = show n ++ ": " ++ show s
-showIterator n (s:ss) = show n ++ ": " ++ show s ++ "\n" ++ showIterator (n+1) ss
-
-instance Show Measure where
-  show (Beats n) = "Set beats per measure to " ++ show n
-  show (Speed n) = "Set tempo to " ++ show n ++ " bpm"
-  show (Times n) = "Repeat the lesson " ++ show n ++ " times"
-  show (Play note dur Nothing) = "Play " ++ note ++ " for " ++ show dur ++ " beats open"
-  show (Play note dur (Just f)) = "Play " ++ note ++ " for " ++ show dur ++ " beats with fingering " ++ f
-  show (Silence n) = "Rest for " ++ show n ++ " beats"
-  show Measure = "Barline"
+printEnv :: Env -> String
+printEnv env = intercalate "\n" songs
+    where
+        songs = map (show . snd) env    -- Env => [String]
