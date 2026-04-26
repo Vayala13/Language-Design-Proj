@@ -1,6 +1,7 @@
 module Syntax where
 import Data.List (intercalate)
 --context free grammar
+
 -- trumpet practice
     {-
     <program>  -> <stmts>
@@ -41,8 +42,7 @@ import Data.List (intercalate)
 -- abstract syntax
 -- Define :: Name -> Song -> Stmt
 type Program = [Stmt]
-
-printProgram :: Program -> String
+printProgram :: Program -> String 
 printProgram [] = ""
 printProgram (s : ss) = show s ++ printProgram ss
 
